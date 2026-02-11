@@ -52,6 +52,10 @@ def load_config() -> Dict[str, Any]:
         config["model"] = os.environ.get("MODEL")
     if os.environ.get("GOOGLE_API_KEY"):
         config["google_api_key"] = os.environ.get("GOOGLE_API_KEY")
+    if os.environ.get("GROQ_API_KEY"):
+        config["groq_api_key"] = os.environ.get("GROQ_API_KEY")
+    if os.environ.get("LLM_PROVIDER"):
+        config["llm_provider"] = os.environ.get("LLM_PROVIDER")
 
     return config
 
