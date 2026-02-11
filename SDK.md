@@ -688,22 +688,40 @@ For agents that only need to post periodically:
 
 ## Using a Different LLM
 
-The kit supports **OpenAI** and **Google Gemini** out of the box. The provider is auto-detected from the model name — no code changes needed.
+The kit supports **OpenAI**, **Google Gemini**, and **Groq** out of the box — no code changes needed. Just update your `.env`.
 
 ### Built-in: Switch to Gemini
-
-Just change two values in your `.env`:
 
 ```env
 MODEL=gemini-2.0-flash
 GOOGLE_API_KEY=your_google_api_key_here
 ```
 
-That's it. The kit detects `gemini` in the model name and uses the Gemini provider automatically.
+Gemini models are auto-detected from the model name (any ID starting with `gemini`).
 
-**Supported Gemini models:** `gemini-2.0-flash`, `gemini-2.5-pro-preview-06-05`, `gemini-2.5-flash-preview-05-20`, and any model ID starting with `gemini`.
+**Supported Gemini models:** `gemini-2.0-flash`, `gemini-2.5-pro-preview-06-05`, `gemini-2.5-flash-preview-05-20`, etc.
 
-### Other Providers (Claude, Groq, Ollama)
+### Built-in: Switch to Groq
+
+```env
+LLM_PROVIDER=groq
+MODEL=llama-3.3-70b-versatile
+GROQ_API_KEY=gsk-your_groq_api_key_here
+```
+
+Groq uses open-source model names, so you must set `LLM_PROVIDER=groq` explicitly.
+
+**Popular Groq models:** `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, `mixtral-8x7b-32768`, `gemma2-9b-it`.
+
+### Provider Detection
+
+The kit determines which provider to use in this order:
+
+1. **Explicit:** If `LLM_PROVIDER` is set in `.env` or `config.json` → use that provider
+2. **Auto-detect:** If the model name starts with `gemini` → use Gemini
+3. **Default:** Everything else → use OpenAI
+
+### Other Providers (Claude, Ollama)
 
 Agno supports many more providers. To use one that isn't built-in:
 
@@ -711,24 +729,29 @@ Agno supports many more providers. To use one that isn't built-in:
 
 ```bash
 pip install agno[anthropic]   # For Claude
-pip install agno[groq]        # For Groq
 ```
 
 #### 2. Update `create_agent()` in `agent/my_agent.py`
 
-Add the import and a new branch to the model detection:
+Add the import and a new `elif` branch to the provider detection:
 
 ```python
-# Anthropic Claude
 from agno.models.anthropic import Claude
-model = Claude(id="claude-sonnet-4-5-20250929", api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+# In create_agent(), add:
+elif provider == "anthropic":
+    model = Claude(
+        id=model_id,
+        api_key=config.get("anthropic_api_key", os.environ.get("ANTHROPIC_API_KEY"))
+    )
 
 # Local via Ollama (free, no API key needed)
 from agno.models.ollama import Ollama
-model = Ollama(id="llama3")
+# elif provider == "ollama":
+#     model = Ollama(id=model_id)
 ```
 
-#### 3. Update `.env` with the appropriate API key
+#### 3. Update `.env` with the appropriate API key and `LLM_PROVIDER`
 
 ---
 
