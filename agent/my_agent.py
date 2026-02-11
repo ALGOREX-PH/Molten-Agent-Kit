@@ -971,6 +971,8 @@ def create_agent() -> Agent:
             id=model_id,
             api_key=config.get("groq_api_key", os.environ.get("GROQ_API_KEY"))
         )
+    elif provider == "ollama":
+        model = Ollama(id=model_id)
     else:
         model = OpenAIChat(
             id=model_id,
