@@ -49,6 +49,8 @@ def load_config() -> Dict[str, Any]:
         config["agent_name"] = os.environ.get("AGENT_NAME")
     if os.environ.get("MODEL"):
         config["model"] = os.environ.get("MODEL")
+    if os.environ.get("GOOGLE_API_KEY"):
+        config["google_api_key"] = os.environ.get("GOOGLE_API_KEY")
 
     return config
 
