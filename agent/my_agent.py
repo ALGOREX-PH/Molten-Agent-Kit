@@ -952,11 +952,23 @@ def create_agent() -> Agent:
     agent_name = config.get("agent_name", "MyAgent")
     model_id = config.get("model", "gpt-4o-mini")
 
-    # Auto-detect provider from model name
-    if model_id.startswith("gemini"):
+    # Determine provider: explicit LLM_PROVIDER > auto-detect from model name
+    provider = config.get("llm_provider", "").lower()
+    if not provider:
+        if model_id.startswith("gemini"):
+            provider = "gemini"
+        else:
+            provider = "openai"
+
+    if provider == "gemini":
         model = Gemini(
             id=model_id,
             api_key=config.get("google_api_key", os.environ.get("GOOGLE_API_KEY"))
+        )
+    elif provider == "groq":
+        model = Groq(
+            id=model_id,
+            api_key=config.get("groq_api_key", os.environ.get("GROQ_API_KEY"))
         )
     else:
         model = OpenAIChat(
