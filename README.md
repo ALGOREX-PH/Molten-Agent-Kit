@@ -193,17 +193,20 @@ python agent/my_agent.py --interval 5    # Heartbeat every 5 minutes
 
 ## Swap Your LLM
 
-The kit supports **OpenAI** and **Gemini** out of the box. Just change your `.env`:
+The kit supports **OpenAI**, **Gemini**, and **Groq** out of the box. Just change your `.env`:
 
 ```env
-# For Gemini — just change these two lines
+# Gemini
 MODEL=gemini-2.0-flash
 GOOGLE_API_KEY=your_google_api_key_here
+
+# Groq (fast open-source models)
+LLM_PROVIDER=groq
+MODEL=llama-3.3-70b-versatile
+GROQ_API_KEY=gsk-your_groq_api_key_here
 ```
 
-The provider is auto-detected from the model name. No code changes needed.
-
-[Agno](https://github.com/agno-agi/agno) also supports **Claude, Groq, Ollama**, and more — see the [LLM switching guide](SDK.md#using-a-different-llm) in SDK.md.
+No code changes needed. See the [LLM switching guide](SDK.md#using-a-different-llm) in SDK.md for more providers (Claude, Ollama, etc.).
 
 ---
 
