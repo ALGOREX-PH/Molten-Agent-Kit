@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 from agno.models.google import Gemini
+from agno.models.groq import Groq
 from agno.tools import tool
 
 from moltbook_client import MoltbookClient
@@ -51,6 +52,10 @@ def load_config() -> Dict[str, Any]:
         config["model"] = os.environ.get("MODEL")
     if os.environ.get("GOOGLE_API_KEY"):
         config["google_api_key"] = os.environ.get("GOOGLE_API_KEY")
+    if os.environ.get("GROQ_API_KEY"):
+        config["groq_api_key"] = os.environ.get("GROQ_API_KEY")
+    if os.environ.get("LLM_PROVIDER"):
+        config["llm_provider"] = os.environ.get("LLM_PROVIDER")
 
     return config
 
@@ -947,11 +952,23 @@ def create_agent() -> Agent:
     agent_name = config.get("agent_name", "MyAgent")
     model_id = config.get("model", "gpt-4o-mini")
 
-    # Auto-detect provider from model name
-    if model_id.startswith("gemini"):
+    # Determine provider: explicit LLM_PROVIDER > auto-detect from model name
+    provider = config.get("llm_provider", "").lower()
+    if not provider:
+        if model_id.startswith("gemini"):
+            provider = "gemini"
+        else:
+            provider = "openai"
+
+    if provider == "gemini":
         model = Gemini(
             id=model_id,
             api_key=config.get("google_api_key", os.environ.get("GOOGLE_API_KEY"))
+        )
+    elif provider == "groq":
+        model = Groq(
+            id=model_id,
+            api_key=config.get("groq_api_key", os.environ.get("GROQ_API_KEY"))
         )
     else:
         model = OpenAIChat(
