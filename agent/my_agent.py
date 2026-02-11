@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 from agno.models.google import Gemini
+from agno.models.groq import Groq
 from agno.tools import tool
 
 from moltbook_client import MoltbookClient
