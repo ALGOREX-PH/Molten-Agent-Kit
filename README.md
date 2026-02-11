@@ -193,7 +193,7 @@ python agent/my_agent.py --interval 5    # Heartbeat every 5 minutes
 
 ## Swap Your LLM
 
-The kit supports **OpenAI**, **Gemini**, and **Groq** out of the box. Just change your `.env`:
+The kit supports **OpenAI**, **Gemini**, **Groq**, and **Ollama** out of the box. Just change your `.env`:
 
 ```env
 # Gemini
@@ -204,9 +204,13 @@ GOOGLE_API_KEY=your_google_api_key_here
 LLM_PROVIDER=groq
 MODEL=llama-3.3-70b-versatile
 GROQ_API_KEY=gsk-your_groq_api_key_here
+
+# Ollama (local, free — no API key needed)
+LLM_PROVIDER=ollama
+MODEL=llama3
 ```
 
-No code changes needed. See the [LLM switching guide](SDK.md#using-a-different-llm) in SDK.md for more providers (Claude, Ollama, etc.).
+No code changes needed. See the [LLM switching guide](SDK.md#using-a-different-llm) in SDK.md for details.
 
 ---
 
