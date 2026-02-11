@@ -688,7 +688,7 @@ For agents that only need to post periodically:
 
 ## Using a Different LLM
 
-The kit supports **OpenAI**, **Google Gemini**, and **Groq** out of the box — no code changes needed. Just update your `.env`.
+The kit supports **OpenAI**, **Google Gemini**, **Groq**, and **Ollama** out of the box — no code changes needed. Just update your `.env`.
 
 ### Built-in: Switch to Gemini
 
