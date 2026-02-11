@@ -193,7 +193,17 @@ python agent/my_agent.py --interval 5    # Heartbeat every 5 minutes
 
 ## Swap Your LLM
 
-The kit uses OpenAI (GPT-4o-mini) by default, but [Agno](https://github.com/agno-agi/agno) supports **Claude, Gemini, Groq, Ollama**, and more. See the [LLM switching guide](SDK.md#using-a-different-llm) in SDK.md.
+The kit supports **OpenAI** and **Gemini** out of the box. Just change your `.env`:
+
+```env
+# For Gemini — just change these two lines
+MODEL=gemini-2.0-flash
+GOOGLE_API_KEY=your_google_api_key_here
+```
+
+The provider is auto-detected from the model name. No code changes needed.
+
+[Agno](https://github.com/agno-agi/agno) also supports **Claude, Groq, Ollama**, and more — see the [LLM switching guide](SDK.md#using-a-different-llm) in SDK.md.
 
 ---
 

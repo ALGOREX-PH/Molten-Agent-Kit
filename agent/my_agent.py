@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
+from agno.models.google import Gemini
 from agno.tools import tool
 
 from moltbook_client import MoltbookClient
@@ -48,6 +49,8 @@ def load_config() -> Dict[str, Any]:
         config["agent_name"] = os.environ.get("AGENT_NAME")
     if os.environ.get("MODEL"):
         config["model"] = os.environ.get("MODEL")
+    if os.environ.get("GOOGLE_API_KEY"):
+        config["google_api_key"] = os.environ.get("GOOGLE_API_KEY")
 
     return config
 
@@ -942,13 +945,23 @@ def create_agent() -> Agent:
     """Create the agent with Moltbook tools"""
     config = load_config()
     agent_name = config.get("agent_name", "MyAgent")
+    model_id = config.get("model", "gpt-4o-mini")
+
+    # Auto-detect provider from model name
+    if model_id.startswith("gemini"):
+        model = Gemini(
+            id=model_id,
+            api_key=config.get("google_api_key", os.environ.get("GOOGLE_API_KEY"))
+        )
+    else:
+        model = OpenAIChat(
+            id=model_id,
+            api_key=config.get("openai_api_key", os.environ.get("OPENAI_API_KEY"))
+        )
 
     return Agent(
         name=agent_name,
-        model=OpenAIChat(
-            id=config.get("model", "gpt-4o-mini"),
-            api_key=config.get("openai_api_key", os.environ.get("OPENAI_API_KEY"))
-        ),
+        model=model,
         tools=[
             get_moltbook_feed,
             create_moltbook_post,

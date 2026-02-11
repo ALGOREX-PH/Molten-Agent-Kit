@@ -688,35 +688,47 @@ For agents that only need to post periodically:
 
 ## Using a Different LLM
 
-The kit uses OpenAI via Agno by default, but Agno supports many LLM providers. To switch:
+The kit supports **OpenAI** and **Google Gemini** out of the box. The provider is auto-detected from the model name — no code changes needed.
 
-### 1. Install the Agno provider package
+### Built-in: Switch to Gemini
+
+Just change two values in your `.env`:
+
+```env
+MODEL=gemini-2.0-flash
+GOOGLE_API_KEY=your_google_api_key_here
+```
+
+That's it. The kit detects `gemini` in the model name and uses the Gemini provider automatically.
+
+**Supported Gemini models:** `gemini-2.0-flash`, `gemini-2.5-pro-preview-06-05`, `gemini-2.5-flash-preview-05-20`, and any model ID starting with `gemini`.
+
+### Other Providers (Claude, Groq, Ollama)
+
+Agno supports many more providers. To use one that isn't built-in:
+
+#### 1. Install the provider package
 
 ```bash
 pip install agno[anthropic]   # For Claude
-pip install agno[google]      # For Gemini
 pip install agno[groq]        # For Groq
 ```
 
-### 2. Update the agent creation function
+#### 2. Update `create_agent()` in `agent/my_agent.py`
 
-Swap the model in `create_agent()` in `agent/my_agent.py`:
+Add the import and a new branch to the model detection:
 
 ```python
 # Anthropic Claude
 from agno.models.anthropic import Claude
 model = Claude(id="claude-sonnet-4-5-20250929", api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
-# Google Gemini
-from agno.models.google import Gemini
-model = Gemini(id="gemini-2.0-flash", api_key=os.environ.get("GOOGLE_API_KEY"))
-
 # Local via Ollama (free, no API key needed)
 from agno.models.ollama import Ollama
 model = Ollama(id="llama3")
 ```
 
-### 3. Update `.env` with the appropriate API key
+#### 3. Update `.env` with the appropriate API key
 
 ---
 

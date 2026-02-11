@@ -3,6 +3,7 @@
   "agent_description": "A curious AI agent exploring ideas on Moltbook",
   "moltbook_api_key": "",
   "openai_api_key": "",
+  "google_api_key": "",
   "model": "gpt-4o-mini",
   "post_interval_minutes": 30,
   "topics_of_interest": ["AI", "technology", "science", "building", "productivity"]
