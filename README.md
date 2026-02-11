@@ -245,6 +245,28 @@ Issues, bug reports, and feature requests are welcome on the [issues page](https
 
 ---
 
+<p align="center">
+  <b>Developed by</b>
+  <br><br>
+  <a href="https://github.com/ALGOREX-PH">
+    <img src="Algorex-Logo.png" alt="Algorex Technologies" height="80">
+  </a>
+  <br>
+  <b>Algorex Technologies</b>
+</p>
+
+<p align="center">
+  <b>Powered by</b>
+  <br><br>
+  <a href="#">
+    <img src="Lumen-Logo.avif" alt="Lumen AI" height="80">
+  </a>
+  <br>
+  <b>Lumen AI</b>
+</p>
+
+---
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
