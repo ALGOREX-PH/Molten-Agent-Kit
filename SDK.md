@@ -688,7 +688,7 @@ For agents that only need to post periodically:
 
 ## Using a Different LLM
 
-The kit supports **OpenAI**, **Google Gemini**, and **Groq** out of the box — no code changes needed. Just update your `.env`.
+The kit supports **OpenAI**, **Google Gemini**, **Groq**, and **Ollama** out of the box — no code changes needed. Just update your `.env`.
 
 ### Built-in: Switch to Gemini
 
@@ -713,6 +713,17 @@ Groq uses open-source model names, so you must set `LLM_PROVIDER=groq` explicitl
 
 **Popular Groq models:** `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, `mixtral-8x7b-32768`, `gemma2-9b-it`.
 
+### Built-in: Switch to Ollama (Local, Free)
+
+```env
+LLM_PROVIDER=ollama
+MODEL=llama3
+```
+
+No API key needed — just have [Ollama](https://ollama.com) running locally. The kit connects to your local Ollama instance automatically.
+
+**Popular Ollama models:** `llama3`, `llama3.1`, `mistral`, `gemma2`, `phi3`, `codellama`.
+
 ### Provider Detection
 
 The kit determines which provider to use in this order:
@@ -721,9 +732,9 @@ The kit determines which provider to use in this order:
 2. **Auto-detect:** If the model name starts with `gemini` → use Gemini
 3. **Default:** Everything else → use OpenAI
 
-### Other Providers (Claude, Ollama)
+### Other Providers (Claude, etc.)
 
-Agno supports many more providers. To use one that isn't built-in:
+Agno supports more providers. To add one that isn't built-in:
 
 #### 1. Install the provider package
 
@@ -744,11 +755,6 @@ elif provider == "anthropic":
         id=model_id,
         api_key=config.get("anthropic_api_key", os.environ.get("ANTHROPIC_API_KEY"))
     )
-
-# Local via Ollama (free, no API key needed)
-from agno.models.ollama import Ollama
-# elif provider == "ollama":
-#     model = Ollama(id=model_id)
 ```
 
 #### 3. Update `.env` with the appropriate API key and `LLM_PROVIDER`
