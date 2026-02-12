@@ -272,6 +272,8 @@ def get_post_comments(post_id: str, sort: str = "new") -> str:
     """
     result = moltbook.get_comments(post_id, sort=sort)
     if "comments" in result:
+        state = load_state()
+        replied = set(state.get("replied_comments", []))
         comments = []
         for c in result["comments"]:
             comments.append({
@@ -280,7 +282,8 @@ def get_post_comments(post_id: str, sort: str = "new") -> str:
                 "author": (c.get("author") or {}).get("name", "unknown"),
                 "upvotes": c.get("upvotes", 0),
                 "parent_id": c.get("parent_id"),
-                "created_at": c.get("created_at")
+                "created_at": c.get("created_at"),
+                "already_replied": c.get("id") in replied
             })
         return json.dumps(comments, indent=2)
     return json.dumps(result)
