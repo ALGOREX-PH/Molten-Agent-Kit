@@ -119,6 +119,8 @@ def get_moltbook_feed(sort: str = "hot", limit: int = 10) -> str:
     """
     result = moltbook.get_posts(sort=sort, limit=limit)
     if result.get("success", True) and "posts" in result:
+        state = load_state()
+        seen = set(state.get("seen_posts", []))
         posts = []
         for p in result["posts"]:
             content = p.get("content") or ""
@@ -129,7 +131,8 @@ def get_moltbook_feed(sort: str = "hot", limit: int = 10) -> str:
                 "author": (p.get("author") or {}).get("name", "unknown"),
                 "submolt": (p.get("submolt") or {}).get("name", "general"),
                 "upvotes": p.get("upvotes", 0),
-                "comment_count": p.get("comment_count", 0)
+                "comment_count": p.get("comment_count", 0),
+                "already_engaged": p["id"] in seen
             })
         return json.dumps(posts, indent=2)
     return json.dumps(result)
@@ -207,6 +210,9 @@ def comment_on_post(post_id: str, content: str) -> str:
         state = load_state()
         state["comments_made"] = state.get("comments_made", 0) + 1
         state["last_interaction_time"] = datetime.now().isoformat()
+        if post_id not in state["seen_posts"]:
+            state["seen_posts"].append(post_id)
+            state["seen_posts"] = state["seen_posts"][-200:]
         save_state(state)
 
     return json.dumps(result)
@@ -228,6 +234,9 @@ def upvote_post(post_id: str) -> str:
     if result.get("success"):
         state = load_state()
         state["upvotes_given"] = state.get("upvotes_given", 0) + 1
+        if post_id not in state["seen_posts"]:
+            state["seen_posts"].append(post_id)
+            state["seen_posts"] = state["seen_posts"][-200:]
         save_state(state)
 
     return json.dumps(result)
@@ -263,6 +272,8 @@ def get_post_comments(post_id: str, sort: str = "new") -> str:
     """
     result = moltbook.get_comments(post_id, sort=sort)
     if "comments" in result:
+        state = load_state()
+        replied = set(state.get("replied_comments", []))
         comments = []
         for c in result["comments"]:
             comments.append({
@@ -271,7 +282,8 @@ def get_post_comments(post_id: str, sort: str = "new") -> str:
                 "author": (c.get("author") or {}).get("name", "unknown"),
                 "upvotes": c.get("upvotes", 0),
                 "parent_id": c.get("parent_id"),
-                "created_at": c.get("created_at")
+                "created_at": c.get("created_at"),
+                "already_replied": c.get("id") in replied
             })
         return json.dumps(comments, indent=2)
     return json.dumps(result)
@@ -297,6 +309,12 @@ def reply_to_comment(post_id: str, comment_id: str, content: str) -> str:
         state["comments_made"] = state.get("comments_made", 0) + 1
         state["replies_made"] = state.get("replies_made", 0) + 1
         state["last_interaction_time"] = datetime.now().isoformat()
+        if comment_id not in state["replied_comments"]:
+            state["replied_comments"].append(comment_id)
+            state["replied_comments"] = state["replied_comments"][-200:]
+        if post_id not in state["seen_posts"]:
+            state["seen_posts"].append(post_id)
+            state["seen_posts"] = state["seen_posts"][-200:]
         save_state(state)
 
     return json.dumps(result)
@@ -501,20 +519,32 @@ def track_post_performance() -> str:
         upvotes = post.get("upvotes", 0)
         comments = post.get("comment_count", 0)
 
-        # Find in history and update performance
+        # Find in history and update performance (delta-based to avoid double-counting)
         for hist in state.get("post_history", []):
             if hist.get("id") == post_id:
                 format_key = hist.get("format", "unknown")
                 engagement = upvotes + (comments * 2)
+                prev_engagement = hist.get("last_engagement", 0)
+
+                if engagement == prev_engagement:
+                    break  # No change since last track
 
                 if format_key not in state["format_performance"]:
                     state["format_performance"][format_key] = {"count": 0, "total_engagement": 0}
-                state["format_performance"][format_key]["count"] += 1
-                state["format_performance"][format_key]["total_engagement"] += engagement
+
+                # Only increment count on first track of this post
+                if prev_engagement == 0:
+                    state["format_performance"][format_key]["count"] += 1
+
+                # Add only the engagement delta
+                delta = engagement - prev_engagement
+                state["format_performance"][format_key]["total_engagement"] += delta
                 state["format_performance"][format_key]["avg_engagement"] = (
                     state["format_performance"][format_key]["total_engagement"] /
                     state["format_performance"][format_key]["count"]
                 )
+
+                hist["last_engagement"] = engagement
 
                 if (not state["best_performing_post"] or
                     engagement > state["best_performing_post"].get("engagement", 0)):
@@ -1016,12 +1046,14 @@ def create_agent() -> Agent:
             "",
             "When replying to comments on YOUR posts:",
             "- ALWAYS check your recent posts for new comments using get_my_posts and get_post_comments",
-            "- Reply to EVERY comment on your posts - this builds relationships and karma",
+            "- Skip comments marked already_replied=true — you've already responded to them",
+            "- Reply to EVERY new comment on your posts - this builds relationships and karma",
             "- Thank people for their input, answer their questions, continue the conversation",
             "- Upvote thoughtful comments on your posts",
             "- Ask follow-up questions to keep discussions going",
             "",
             "When commenting on OTHER posts:",
+            "- Skip posts marked already_engaged=true — you've already interacted with them",
             "- Add concrete value - share insights, perspectives, or useful information",
             "- Share relevant experience and genuine thoughts",
             "- Be encouraging and supportive to others",
