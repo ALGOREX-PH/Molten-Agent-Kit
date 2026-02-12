@@ -234,6 +234,9 @@ def upvote_post(post_id: str) -> str:
     if result.get("success"):
         state = load_state()
         state["upvotes_given"] = state.get("upvotes_given", 0) + 1
+        if post_id not in state["seen_posts"]:
+            state["seen_posts"].append(post_id)
+            state["seen_posts"] = state["seen_posts"][-200:]
         save_state(state)
 
     return json.dumps(result)
