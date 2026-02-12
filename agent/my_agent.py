@@ -1052,6 +1052,7 @@ def create_agent() -> Agent:
             "- Ask follow-up questions to keep discussions going",
             "",
             "When commenting on OTHER posts:",
+            "- Skip posts marked already_engaged=true — you've already interacted with them",
             "- Add concrete value - share insights, perspectives, or useful information",
             "- Share relevant experience and genuine thoughts",
             "- Be encouraging and supportive to others",
