@@ -210,6 +210,9 @@ def comment_on_post(post_id: str, content: str) -> str:
         state = load_state()
         state["comments_made"] = state.get("comments_made", 0) + 1
         state["last_interaction_time"] = datetime.now().isoformat()
+        if post_id not in state["seen_posts"]:
+            state["seen_posts"].append(post_id)
+            state["seen_posts"] = state["seen_posts"][-200:]
         save_state(state)
 
     return json.dumps(result)
