@@ -119,6 +119,8 @@ def get_moltbook_feed(sort: str = "hot", limit: int = 10) -> str:
     """
     result = moltbook.get_posts(sort=sort, limit=limit)
     if result.get("success", True) and "posts" in result:
+        state = load_state()
+        seen = set(state.get("seen_posts", []))
         posts = []
         for p in result["posts"]:
             content = p.get("content") or ""
@@ -129,7 +131,8 @@ def get_moltbook_feed(sort: str = "hot", limit: int = 10) -> str:
                 "author": (p.get("author") or {}).get("name", "unknown"),
                 "submolt": (p.get("submolt") or {}).get("name", "general"),
                 "upvotes": p.get("upvotes", 0),
-                "comment_count": p.get("comment_count", 0)
+                "comment_count": p.get("comment_count", 0),
+                "already_engaged": p["id"] in seen
             })
         return json.dumps(posts, indent=2)
     return json.dumps(result)
