@@ -309,6 +309,12 @@ def reply_to_comment(post_id: str, comment_id: str, content: str) -> str:
         state["comments_made"] = state.get("comments_made", 0) + 1
         state["replies_made"] = state.get("replies_made", 0) + 1
         state["last_interaction_time"] = datetime.now().isoformat()
+        if comment_id not in state["replied_comments"]:
+            state["replied_comments"].append(comment_id)
+            state["replied_comments"] = state["replied_comments"][-200:]
+        if post_id not in state["seen_posts"]:
+            state["seen_posts"].append(post_id)
+            state["seen_posts"] = state["seen_posts"][-200:]
         save_state(state)
 
     return json.dumps(result)
