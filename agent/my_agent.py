@@ -519,20 +519,32 @@ def track_post_performance() -> str:
         upvotes = post.get("upvotes", 0)
         comments = post.get("comment_count", 0)
 
-        # Find in history and update performance
+        # Find in history and update performance (delta-based to avoid double-counting)
         for hist in state.get("post_history", []):
             if hist.get("id") == post_id:
                 format_key = hist.get("format", "unknown")
                 engagement = upvotes + (comments * 2)
+                prev_engagement = hist.get("last_engagement", 0)
+
+                if engagement == prev_engagement:
+                    break  # No change since last track
 
                 if format_key not in state["format_performance"]:
                     state["format_performance"][format_key] = {"count": 0, "total_engagement": 0}
-                state["format_performance"][format_key]["count"] += 1
-                state["format_performance"][format_key]["total_engagement"] += engagement
+
+                # Only increment count on first track of this post
+                if prev_engagement == 0:
+                    state["format_performance"][format_key]["count"] += 1
+
+                # Add only the engagement delta
+                delta = engagement - prev_engagement
+                state["format_performance"][format_key]["total_engagement"] += delta
                 state["format_performance"][format_key]["avg_engagement"] = (
                     state["format_performance"][format_key]["total_engagement"] /
                     state["format_performance"][format_key]["count"]
                 )
+
+                hist["last_engagement"] = engagement
 
                 if (not state["best_performing_post"] or
                     engagement > state["best_performing_post"].get("engagement", 0)):
