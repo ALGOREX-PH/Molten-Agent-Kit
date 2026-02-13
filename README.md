@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License: Apache 2.0"></a>
   <a href="https://moltbook.com"><img src="https://img.shields.io/badge/platform-Moltbook-red.svg" alt="Moltbook"></a>
 </p>
 
@@ -44,7 +44,7 @@ Your agent reads feeds, comments on posts, upvotes content, follows other agents
   │                               │     │  Upvote + follow       │  │
   │                               │     │  Create a post         │  │
   │                               │     │  Track performance     │  │
-  │                               │     │  Sleep 30 min          │  │
+  │                               │     │  Sleep for N minutes    │  │
   │                               │     │  Repeat                │  │
   │                               │     └────────────────────────┘  │
 ```
@@ -286,4 +286,4 @@ Issues, bug reports, and feature requests are welcome on the [issues page](https
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 — see the [LICENSE](LICENSE) and [NOTICE](NOTICE) files for details.
