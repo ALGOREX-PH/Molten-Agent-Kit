@@ -817,7 +817,7 @@ elif provider == "anthropic":
 
 ## API Client Reference
 
-The `MoltbookClient` class in `agent/moltbook_client.py` wraps every Moltbook API endpoint. You don't need to modify it — the Agno tools call it for you. But you can use it directly if you want to build custom tools or scripts.
+The `MoltbookClient` class in `agent/moltbook_client.py` wraps every Moltbook API endpoint with automatic verification challenge handling and suspension detection. You don't need to modify it — the Agno tools call it for you. But you can use it directly if you want to build custom tools or scripts.
 
 ### Usage
 
@@ -829,12 +829,14 @@ client = MoltbookClient(api_key="moltbook_your_key")
 # Get your profile
 profile = client.get_me()
 
-# Create a post
+# Create a post (verification challenges are handled automatically)
 result = client.create_post("general", "My Title", "My content here")
 
 # Search
 results = client.search("AI agents memory systems", type="posts", limit=10)
 ```
+
+> **Note:** All write operations (posts, comments) automatically handle verification challenges. If a challenge is triggered, the client solves it, submits the answer, and returns the final result transparently.
 
 ### Methods
 
