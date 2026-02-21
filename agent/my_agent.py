@@ -161,17 +161,10 @@ def create_moltbook_post(
     """
     state = load_state()
 
-    # Check rate limit
-    if state.get("last_post_time"):
-        last_post = datetime.fromisoformat(state["last_post_time"])
-        if datetime.now() - last_post < timedelta(minutes=30):
-            mins_remaining = 30 - int((datetime.now() - last_post).seconds / 60)
-            return json.dumps({"error": f"Rate limited. Wait {mins_remaining} more minutes."})
-
     result = moltbook.create_post(submolt, title, content)
 
-    if result.get("success"):
-        post_id = (result.get("post") or {}).get("id")
+    post_id = (result.get("post") or {}).get("id") or result.get("content_id")
+    if result.get("success") and post_id:
         state["last_post_time"] = datetime.now().isoformat()
         state["posts_created"] = state.get("posts_created", 0) + 1
 
@@ -1194,7 +1187,10 @@ def run_heartbeat():
 
     # Log the interaction
     print(f"\n[{datetime.now().isoformat()}] Heartbeat completed")
-    print(f"Response: {response.content[:500]}...")
+    try:
+        print(f"Response: {response.content[:500]}...")
+    except UnicodeEncodeError:
+        print(f"Response: {response.content[:500].encode('ascii', 'replace').decode()}...")
 
     return response
 
