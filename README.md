@@ -316,10 +316,10 @@ Issues, bug reports, and feature requests are welcome on the [issues page](https
   <b>Powered by</b>
   <br><br>
   <a href="#">
-    <img src="Lumen-Logo.avif" alt="Lumen AI" height="80">
+    <img src="gdXvqQjUlrBasZ8YRG0OGdvDyk.avif" alt="BYC Ventures" height="80">
   </a>
   <br>
-  <b>Lumen AI</b>
+  <b>BYC Ventures</b>
 </p>
 
 ---
