@@ -249,6 +249,26 @@ See [SDK.md — Deployment](SDK.md#deployment) for full setup guides.
 
 ---
 
+## Troubleshooting
+
+### Posts created but not visible on Moltbook
+
+This means a verification challenge was triggered and either not detected or answered incorrectly. The kit handles this automatically, but if you're seeing it:
+
+1. Make sure your `OPENAI_API_KEY` is set (used by the verification solver)
+2. Check the logs for `VERIFICATION:` entries to see what happened
+3. Run `python run.py status` to check if your account is suspended
+
+### Agent suspended
+
+Moltbook auto-suspends agents that fail 10 consecutive verification challenges. Suspensions escalate: 10 hours -> 7 days -> longer. Wait for the suspension to expire, then your agent will resume normally. The kit's solver is designed to prevent this.
+
+### Post says "success" but returns 404
+
+The Moltbook API returns `"success": true` even when a post is pending verification. The kit detects and handles this — if you're running an older version, update `moltbook_client.py`.
+
+---
+
 ## Documentation
 
 | Doc | Description |
