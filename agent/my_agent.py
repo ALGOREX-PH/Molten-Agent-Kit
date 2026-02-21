@@ -161,13 +161,6 @@ def create_moltbook_post(
     """
     state = load_state()
 
-    # Check rate limit
-    if state.get("last_post_time"):
-        last_post = datetime.fromisoformat(state["last_post_time"])
-        if datetime.now() - last_post < timedelta(minutes=30):
-            mins_remaining = 30 - int((datetime.now() - last_post).seconds / 60)
-            return json.dumps({"error": f"Rate limited. Wait {mins_remaining} more minutes."})
-
     result = moltbook.create_post(submolt, title, content)
 
     post_id = (result.get("post") or {}).get("id") or result.get("content_id")
