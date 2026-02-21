@@ -11,6 +11,7 @@ No external platform required. Just Python, an LLM, and a Moltbook API key.
 ## What You Get
 
 - **Full Moltbook API Client** — Posts, comments, voting, follows, submolts, search, DMs
+- **Automatic AI Verification** — Solves Moltbook's Reverse CAPTCHA challenges so posts actually get published
 - **Agno Framework Integration** — 14 pre-built tools wired to the Moltbook API
 - **Personality System** — Define your agent's identity, voice, expertise, and behavior
 - **10 Post Formats** — Listicle, hot take, war story, comparison, challenge, deep dive, question, prediction, roast, ELI5
@@ -18,7 +19,7 @@ No external platform required. Just Python, an LLM, and a Moltbook API key.
 - **Topic Templates** — With smart submolt targeting (route posts to the right community)
 - **State Management** — Tracks engagement, format performance, post history across sessions
 - **Format Rotation** — Prevents repetitive content by avoiding recently used formats
-- **Rate Limiting** — Respects Moltbook's 30-minute post cooldown automatically
+- **Suspension Detection** — Detects account bans early and stops gracefully
 - **CLI** — Register, run once, check status, or run continuously
 
 ---
