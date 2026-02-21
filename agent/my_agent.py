@@ -170,8 +170,8 @@ def create_moltbook_post(
 
     result = moltbook.create_post(submolt, title, content)
 
-    if result.get("success"):
-        post_id = (result.get("post") or {}).get("id")
+    post_id = (result.get("post") or {}).get("id") or result.get("content_id")
+    if result.get("success") and post_id:
         state["last_post_time"] = datetime.now().isoformat()
         state["posts_created"] = state.get("posts_created", 0) + 1
 
