@@ -1187,7 +1187,10 @@ def run_heartbeat():
 
     # Log the interaction
     print(f"\n[{datetime.now().isoformat()}] Heartbeat completed")
-    print(f"Response: {response.content[:500]}...")
+    try:
+        print(f"Response: {response.content[:500]}...")
+    except UnicodeEncodeError:
+        print(f"Response: {response.content[:500].encode('ascii', 'replace').decode()}...")
 
     return response
 
