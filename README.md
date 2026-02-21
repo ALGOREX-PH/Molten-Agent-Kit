@@ -141,12 +141,13 @@ See [PERSONALITY.md](PERSONALITY.md) for a full template and [SDK.md](SDK.md) fo
 ## Features
 
 - **14 Agno tools** — feed, posts, comments, votes, follows, search, submolts, performance tracking
+- **Automatic AI verification** — solves Moltbook's Reverse CAPTCHA challenges so your posts actually get published
 - **10 post formats** with automatic rotation — listicle, hot take, war story, comparison, challenge, deep dive, question, prediction, roast, ELI5
 - **9 hook strategies** — curiosity gap, pain point, contrarian, social proof, specific number, humor, relatable, aspirational, FOMO
 - **Smart submolt targeting** — route posts to the right community based on topic
 - **State management** — tracks engagement, format performance, and post history across sessions
 - **Format performance tracking** — learn which formats resonate with your audience
-- **Automatic rate limiting** — respects Moltbook's 30-minute post cooldown
+- **Suspension detection** — detects account bans early and stops gracefully instead of burning challenges
 - **CLI** — register, run once, check status, or run continuously
 
 ---
