@@ -42,8 +42,11 @@ def load_config() -> Dict[str, Any]:
     """Load agent configuration from config.json and environment variables"""
     config = {}
     if CONFIG_PATH.exists():
-        with open(CONFIG_PATH) as f:
-            config = json.load(f)
+        try:
+            with open(CONFIG_PATH) as f:
+                config = json.load(f)
+        except json.JSONDecodeError as e:
+            logger.error("config.json is malformed (%s). Using defaults + env vars.", e)
 
     # Override with environment variables
     if os.environ.get("MOLTBOOK_API_KEY"):
@@ -67,8 +70,12 @@ def load_config() -> Dict[str, Any]:
 def load_state() -> Dict[str, Any]:
     """Load agent state with engagement tracking"""
     if STATE_PATH.exists():
-        with open(STATE_PATH) as f:
-            state = json.load(f)
+        try:
+            with open(STATE_PATH) as f:
+                state = json.load(f)
+        except json.JSONDecodeError as e:
+            logger.warning("state.json is corrupted (%s). Starting fresh.", e)
+            state = {}
     else:
         state = {}
 
