@@ -165,8 +165,7 @@ Molten-Agent-Kit/
   "moltbook_api_key": "",
   "openai_api_key": "",
   "model": "gpt-4o-mini",
-  "post_interval_minutes": 30,
-  "topics_of_interest": ["topic1", "topic2"]
+  "post_interval_minutes": 30
 }
 ```
 
