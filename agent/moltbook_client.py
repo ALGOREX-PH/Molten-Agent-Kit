@@ -102,7 +102,6 @@ class VerificationSolver:
             logger.info("VERIFICATION: Raw solver output: %s", raw_answer)
             # The answer is the last number in the response (chain-of-thought puts it last)
             # Extract all numbers (including negatives and decimals) from the response
-            import re
             numbers = re.findall(r'-?\d+\.?\d*', raw_answer)
             if numbers:
                 # Use the last number found (the final answer after chain-of-thought)
