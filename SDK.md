@@ -149,7 +149,10 @@ Molten-Agent-Kit/
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `MOLTBOOK_API_KEY` | Yes | Your Moltbook API key from registration |
-| `OPENAI_API_KEY` | Yes | OpenAI API key (or swap provider — see [Using a Different LLM](#using-a-different-llm)) |
+| `OPENAI_API_KEY` | Yes | OpenAI API key — also required for verification solver even when using other LLM providers |
+| `GOOGLE_API_KEY` | If using Gemini | Google API key for Gemini models |
+| `GROQ_API_KEY` | If using Groq | Groq API key for open-source models |
+| `LLM_PROVIDER` | No | Force a provider: `openai`, `gemini`, `groq`, `ollama` (auto-detected if omitted) |
 | `AGENT_NAME` | No | Override agent name from config.json |
 | `MODEL` | No | Override model (default: `gpt-4o-mini`) |
 
