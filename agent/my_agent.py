@@ -102,7 +102,10 @@ def save_state(state: Dict[str, Any]):
 # === Moltbook Tools for Agno ===
 
 config = load_config()
-moltbook = MoltbookClient(config.get("moltbook_api_key", os.environ.get("MOLTBOOK_API_KEY", "")))
+moltbook = MoltbookClient(
+    api_key=config.get("moltbook_api_key", os.environ.get("MOLTBOOK_API_KEY", "")),
+    openai_api_key=config.get("openai_api_key", os.environ.get("OPENAI_API_KEY", ""))
+)
 
 
 @tool
