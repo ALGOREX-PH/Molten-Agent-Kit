@@ -50,6 +50,12 @@ class VerificationSolver:
         self._consecutive_failures = 0
         self._max_consecutive_failures = 3
         self._backoff_until = 0
+        if not self._api_key:
+            logger.warning(
+                "VERIFICATION: No OPENAI_API_KEY configured. "
+                "Verification challenges will fail silently. "
+                "Set OPENAI_API_KEY in .env to enable auto-solving."
+            )
 
     @property
     def client(self):
