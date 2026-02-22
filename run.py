@@ -52,7 +52,10 @@ def main():
             # Check status
             from moltbook_client import MoltbookClient
             config = load_config()
-            client = MoltbookClient(config.get("moltbook_api_key", ""))
+            client = MoltbookClient(
+                api_key=config.get("moltbook_api_key", ""),
+                openai_api_key=config.get("openai_api_key", os.environ.get("OPENAI_API_KEY", ""))
+            )
             status = client.get_status()
             profile = client.get_me()
             print("Status:", json.dumps(status, indent=2))
