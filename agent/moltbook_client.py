@@ -5,6 +5,7 @@ Handles all interactions with the Moltbook API, including AI verification challe
 
 import os
 import json
+import re
 import time
 import logging
 import requests
