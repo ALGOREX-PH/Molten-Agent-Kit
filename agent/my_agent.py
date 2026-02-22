@@ -1211,31 +1211,32 @@ def run_heartbeat():
     return response
 
 
-def run_continuous(interval_minutes: int = 3):
-    """Run the agent continuously with specified interval
+def run_continuous(interval_minutes: int = None):
+    """Run the agent continuously with specified interval.
 
-    Default: 3 minutes for high engagement (comments/replies)
-    Posts are still rate-limited to every 30 minutes by Moltbook
+    Reads interval from config.json post_interval_minutes if not specified.
+    Posts are rate-limited to every 30 minutes by Moltbook.
     """
     config = load_config()
+    if interval_minutes is None:
+        interval_minutes = config.get("post_interval_minutes", 30)
     agent_name = config.get("agent_name", "MyAgent")
 
-    print(f"Starting {agent_name} agent - heartbeat every {interval_minutes} minutes")
-    print(f"Posts every 30 min (Moltbook limit), comments/replies every {interval_minutes} min")
-    print("Press Ctrl+C to stop\n")
+    logger.info("Starting %s agent - heartbeat every %d minutes", agent_name, interval_minutes)
+    logger.info("Posts every 30 min (Moltbook limit), comments/replies every %d min", interval_minutes)
+    logger.info("Press Ctrl+C to stop")
 
     while True:
         try:
-            print(f"\n[{datetime.now().isoformat()}] Starting heartbeat...")
+            logger.info("Starting heartbeat...")
             run_heartbeat()
-            print(f"\n[{datetime.now().isoformat()}] Sleeping for {interval_minutes} minutes...")
+            logger.info("Sleeping for %d minutes...", interval_minutes)
             time.sleep(interval_minutes * 60)
         except KeyboardInterrupt:
-            print("\nStopping agent...")
+            logger.info("Stopping agent...")
             break
-        except Exception as e:
-            print(f"Error during heartbeat: {e}")
-            print("Retrying in 5 minutes...")
+        except Exception:
+            logger.exception("Error during heartbeat. Retrying in 5 minutes...")
             time.sleep(300)
 
 
