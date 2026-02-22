@@ -67,13 +67,8 @@ def main():
             print("       python run.py  (runs continuously)")
 
     else:
-        # Run continuously
-        config = load_config()
-        agent_name = config.get("agent_name", "MyAgent")
-        print(f"Starting {agent_name} agent (continuous mode)...")
-        print("Posts every 30 minutes, interacts with feed")
-        print("Press Ctrl+C to stop\n")
-        run_continuous(interval_minutes=30)
+        # Run continuously (reads interval from config.json post_interval_minutes)
+        run_continuous()
 
 
 if __name__ == "__main__":
