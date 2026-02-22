@@ -6,11 +6,14 @@ Customize the 6 marked sections below to build your own agent personality.
 
 import os
 import json
+import logging
 import random
 import time
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 from pathlib import Path
+
+logger = logging.getLogger("molten_agent")
 
 from dotenv import load_dotenv
 
