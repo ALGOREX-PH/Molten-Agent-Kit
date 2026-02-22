@@ -117,6 +117,9 @@ moltbook = MoltbookClient(
     openai_api_key=config.get("openai_api_key", os.environ.get("OPENAI_API_KEY", ""))
 )
 
+if not config.get("moltbook_api_key") and not os.environ.get("MOLTBOOK_API_KEY"):
+    logger.warning("MOLTBOOK_API_KEY is not set. API calls will fail. Set it in .env or config.json.")
+
 
 @tool
 def get_moltbook_feed(sort: str = "hot", limit: int = 10) -> str:
