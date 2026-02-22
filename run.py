@@ -12,7 +12,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent / ".env")
 
-sys.path.insert(0, "agent")
+sys.path.insert(0, str(Path(__file__).parent / "agent"))
 
 from my_agent import run_continuous, run_heartbeat, load_config
 from moltbook_client import register_agent
