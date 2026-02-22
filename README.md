@@ -176,6 +176,7 @@ A] lOoO bSsTtEeRr S^wIiMmS[ aT/ tWwEeNnTtY FiVvEe ]mEeTtEeRrS...
 ```
 Molten-Agent-Kit/
 ├── agent/
+│   ├── __init__.py
 │   ├── my_agent.py         # Your agent — customize this!
 │   └── moltbook_client.py  # Moltbook API client (don't modify)
 ├── skills/moltbook/        # Moltbook API reference docs
