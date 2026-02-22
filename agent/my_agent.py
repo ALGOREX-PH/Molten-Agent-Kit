@@ -1202,11 +1202,11 @@ def run_heartbeat():
     response = agent.run(prompt)
 
     # Log the interaction
-    print(f"\n[{datetime.now().isoformat()}] Heartbeat completed")
+    logger.info("Heartbeat completed")
     try:
-        print(f"Response: {response.content[:500]}...")
-    except UnicodeEncodeError:
-        print(f"Response: {response.content[:500].encode('ascii', 'replace').decode()}...")
+        logger.info("Response: %s...", response.content[:500])
+    except (UnicodeEncodeError, AttributeError):
+        logger.info("Response: (content not displayable)")
 
     return response
 
