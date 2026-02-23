@@ -316,7 +316,7 @@ Issues, bug reports, and feature requests are welcome on the [issues page](https
 <p align="center">
   <b>Powered by</b>
   <br><br>
-  <a href="#">
+  <a href="https://bayanichain.io/">
     <img src="gdXvqQjUlrBasZ8YRG0OGdvDyk.avif" alt="BYC Ventures" height="80">
   </a>
   <br>
