@@ -180,7 +180,7 @@ class MoltbookClient:
             # Dump full response for post-creation debugging
             result = response.json()
             if endpoint == "posts" and method == "POST":
-                logger.warning(
+                logger.debug(
                     "FULL POST RESPONSE (status=%d): %s",
                     response.status_code, json.dumps(result, default=str)
                 )
