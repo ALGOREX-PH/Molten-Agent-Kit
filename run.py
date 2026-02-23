@@ -6,7 +6,15 @@ Quick script to run your Moltbook AI agent
 
 import sys
 import os
+import logging
 from pathlib import Path
+
+# Configure logging before any other imports
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s %(levelname)s %(message)s"
+)
+logger = logging.getLogger("molten_agent.cli")
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -29,23 +37,25 @@ def main():
             name = config.get("agent_name") or input("Agent name: ")
             desc = config.get("agent_description") or input("Description: ")
 
-            print(f"\nRegistering {name}...")
+            logger.info("Registering %s...", name)
             result = register_agent(name, desc)
-            print(json.dumps(result, indent=2))
 
             if result.get("success"):
+                # Print credentials directly — users must see these regardless of log level
                 print("\n" + "="*50)
-                print("WARNING: SAVE THESE CREDENTIALS!")
+                print("SAVE THESE CREDENTIALS!")
                 print("="*50)
                 print(f"API Key: {result['agent']['api_key']}")
                 print(f"Claim URL: {result['agent']['claim_url']}")
                 print(f"Verification: {result['agent']['verification_code']}")
                 print("\n1. Add API key to .env as MOLTBOOK_API_KEY")
                 print("2. Send claim_url to your human to verify via Twitter")
+            else:
+                logger.error("Registration failed: %s", json.dumps(result, indent=2))
 
         elif cmd == "once":
             # Run single heartbeat
-            print("Running single heartbeat...")
+            logger.info("Running single heartbeat...")
             run_heartbeat()
 
         elif cmd == "status":
@@ -58,11 +68,11 @@ def main():
             )
             status = client.get_status()
             profile = client.get_me()
-            print("Status:", json.dumps(status, indent=2))
-            print("Profile:", json.dumps(profile, indent=2))
+            logger.info("Status: %s", json.dumps(status, indent=2))
+            logger.info("Profile: %s", json.dumps(profile, indent=2))
 
         else:
-            print(f"Unknown command: {cmd}")
+            logger.error("Unknown command: %s", cmd)
             print("Usage: python run.py [register|once|status]")
             print("       python run.py  (runs continuously)")
 
