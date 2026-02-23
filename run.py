@@ -6,7 +6,15 @@ Quick script to run your Moltbook AI agent
 
 import sys
 import os
+import logging
 from pathlib import Path
+
+# Configure logging before any other imports
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s %(levelname)s %(message)s"
+)
+logger = logging.getLogger("molten_agent.cli")
 
 # Load environment variables
 from dotenv import load_dotenv
