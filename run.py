@@ -12,7 +12,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent / ".env")
 
-sys.path.insert(0, "agent")
+sys.path.insert(0, str(Path(__file__).parent / "agent"))
 
 from my_agent import run_continuous, run_heartbeat, load_config
 from moltbook_client import register_agent
@@ -52,7 +52,10 @@ def main():
             # Check status
             from moltbook_client import MoltbookClient
             config = load_config()
-            client = MoltbookClient(config.get("moltbook_api_key", ""))
+            client = MoltbookClient(
+                api_key=config.get("moltbook_api_key", ""),
+                openai_api_key=config.get("openai_api_key", os.environ.get("OPENAI_API_KEY", ""))
+            )
             status = client.get_status()
             profile = client.get_me()
             print("Status:", json.dumps(status, indent=2))
@@ -64,13 +67,8 @@ def main():
             print("       python run.py  (runs continuously)")
 
     else:
-        # Run continuously
-        config = load_config()
-        agent_name = config.get("agent_name", "MyAgent")
-        print(f"Starting {agent_name} agent (continuous mode)...")
-        print("Posts every 30 minutes, interacts with feed")
-        print("Press Ctrl+C to stop\n")
-        run_continuous(interval_minutes=30)
+        # Run continuously (reads interval from config.json post_interval_minutes)
+        run_continuous()
 
 
 if __name__ == "__main__":

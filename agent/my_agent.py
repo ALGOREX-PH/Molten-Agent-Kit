@@ -6,11 +6,14 @@ Customize the 6 marked sections below to build your own agent personality.
 
 import os
 import json
+import logging
 import random
 import time
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 from pathlib import Path
+
+logger = logging.getLogger("molten_agent")
 
 from dotenv import load_dotenv
 
@@ -39,8 +42,11 @@ def load_config() -> Dict[str, Any]:
     """Load agent configuration from config.json and environment variables"""
     config = {}
     if CONFIG_PATH.exists():
-        with open(CONFIG_PATH) as f:
-            config = json.load(f)
+        try:
+            with open(CONFIG_PATH) as f:
+                config = json.load(f)
+        except json.JSONDecodeError as e:
+            logger.error("config.json is malformed (%s). Using defaults + env vars.", e)
 
     # Override with environment variables
     if os.environ.get("MOLTBOOK_API_KEY"):
@@ -64,8 +70,12 @@ def load_config() -> Dict[str, Any]:
 def load_state() -> Dict[str, Any]:
     """Load agent state with engagement tracking"""
     if STATE_PATH.exists():
-        with open(STATE_PATH) as f:
-            state = json.load(f)
+        try:
+            with open(STATE_PATH) as f:
+                state = json.load(f)
+        except json.JSONDecodeError as e:
+            logger.warning("state.json is corrupted (%s). Starting fresh.", e)
+            state = {}
     else:
         state = {}
 
@@ -102,7 +112,13 @@ def save_state(state: Dict[str, Any]):
 # === Moltbook Tools for Agno ===
 
 config = load_config()
-moltbook = MoltbookClient(config.get("moltbook_api_key", os.environ.get("MOLTBOOK_API_KEY", "")))
+moltbook = MoltbookClient(
+    api_key=config.get("moltbook_api_key", os.environ.get("MOLTBOOK_API_KEY", "")),
+    openai_api_key=config.get("openai_api_key", os.environ.get("OPENAI_API_KEY", ""))
+)
+
+if not config.get("moltbook_api_key") and not os.environ.get("MOLTBOOK_API_KEY"):
+    logger.warning("MOLTBOOK_API_KEY is not set. API calls will fail. Set it in .env or config.json.")
 
 
 @tool
@@ -1186,40 +1202,41 @@ def run_heartbeat():
     response = agent.run(prompt)
 
     # Log the interaction
-    print(f"\n[{datetime.now().isoformat()}] Heartbeat completed")
+    logger.info("Heartbeat completed")
     try:
-        print(f"Response: {response.content[:500]}...")
-    except UnicodeEncodeError:
-        print(f"Response: {response.content[:500].encode('ascii', 'replace').decode()}...")
+        logger.info("Response: %s...", response.content[:500])
+    except (UnicodeEncodeError, AttributeError):
+        logger.info("Response: (content not displayable)")
 
     return response
 
 
-def run_continuous(interval_minutes: int = 3):
-    """Run the agent continuously with specified interval
+def run_continuous(interval_minutes: int = None):
+    """Run the agent continuously with specified interval.
 
-    Default: 3 minutes for high engagement (comments/replies)
-    Posts are still rate-limited to every 30 minutes by Moltbook
+    Reads interval from config.json post_interval_minutes if not specified.
+    Posts are rate-limited to every 30 minutes by Moltbook.
     """
     config = load_config()
+    if interval_minutes is None:
+        interval_minutes = config.get("post_interval_minutes", 30)
     agent_name = config.get("agent_name", "MyAgent")
 
-    print(f"Starting {agent_name} agent - heartbeat every {interval_minutes} minutes")
-    print(f"Posts every 30 min (Moltbook limit), comments/replies every {interval_minutes} min")
-    print("Press Ctrl+C to stop\n")
+    logger.info("Starting %s agent - heartbeat every %d minutes", agent_name, interval_minutes)
+    logger.info("Posts every 30 min (Moltbook limit), comments/replies every %d min", interval_minutes)
+    logger.info("Press Ctrl+C to stop")
 
     while True:
         try:
-            print(f"\n[{datetime.now().isoformat()}] Starting heartbeat...")
+            logger.info("Starting heartbeat...")
             run_heartbeat()
-            print(f"\n[{datetime.now().isoformat()}] Sleeping for {interval_minutes} minutes...")
+            logger.info("Sleeping for %d minutes...", interval_minutes)
             time.sleep(interval_minutes * 60)
         except KeyboardInterrupt:
-            print("\nStopping agent...")
+            logger.info("Stopping agent...")
             break
-        except Exception as e:
-            print(f"Error during heartbeat: {e}")
-            print("Retrying in 5 minutes...")
+        except Exception:
+            logger.exception("Error during heartbeat. Retrying in 5 minutes...")
             time.sleep(300)
 
 

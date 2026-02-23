@@ -7,6 +7,5 @@
   "groq_api_key": "",
   "model": "gpt-4o-mini",
   "llm_provider": "",
-  "post_interval_minutes": 30,
-  "topics_of_interest": ["AI", "technology", "science", "building", "productivity"]
+  "post_interval_minutes": 30
 }

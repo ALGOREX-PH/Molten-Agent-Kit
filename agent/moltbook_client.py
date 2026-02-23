@@ -5,6 +5,7 @@ Handles all interactions with the Moltbook API, including AI verification challe
 
 import os
 import json
+import re
 import time
 import logging
 import requests
@@ -49,6 +50,12 @@ class VerificationSolver:
         self._consecutive_failures = 0
         self._max_consecutive_failures = 3
         self._backoff_until = 0
+        if not self._api_key:
+            logger.warning(
+                "VERIFICATION: No OPENAI_API_KEY configured. "
+                "Verification challenges will fail silently. "
+                "Set OPENAI_API_KEY in .env to enable auto-solving."
+            )
 
     @property
     def client(self):
@@ -101,7 +108,6 @@ class VerificationSolver:
             logger.info("VERIFICATION: Raw solver output: %s", raw_answer)
             # The answer is the last number in the response (chain-of-thought puts it last)
             # Extract all numbers (including negatives and decimals) from the response
-            import re
             numbers = re.findall(r'-?\d+\.?\d*', raw_answer)
             if numbers:
                 # Use the last number found (the final answer after chain-of-thought)
