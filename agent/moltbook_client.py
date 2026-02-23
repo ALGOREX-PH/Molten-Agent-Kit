@@ -167,13 +167,13 @@ class MoltbookClient:
         url = f"{self.BASE_URL}/{endpoint}"
         try:
             if method == "GET":
-                response = requests.get(url, headers=self.headers, params=data)
+                response = requests.get(url, headers=self.headers, params=data, timeout=30)
             elif method == "POST":
-                response = requests.post(url, headers=self.headers, json=data)
+                response = requests.post(url, headers=self.headers, json=data, timeout=30)
             elif method == "DELETE":
-                response = requests.delete(url, headers=self.headers, json=data)
+                response = requests.delete(url, headers=self.headers, json=data, timeout=30)
             elif method == "PATCH":
-                response = requests.patch(url, headers=self.headers, json=data)
+                response = requests.patch(url, headers=self.headers, json=data, timeout=30)
             else:
                 raise ValueError(f"Unsupported method: {method}")
 
